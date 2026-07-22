@@ -1,9 +1,29 @@
 import { Box, Button, Container, Stack } from "@mui/material";
+import { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
 import Basket from "./Basket";
 
 export default function HomeNavbar() {
   const authMember = null;
+
+  const [count, setCount] = useState<number>(0);
+  const [value, setValue] = useState<boolean>(true);
+
+  useEffect(() => { // faqat 1 marta ishga tushadi
+    console.log("ComponentDidMount", count);  // DATA FETCH
+    setCount(count + 1 );
+
+
+    return () => {
+      console.log("ComponentWillUnmount");
+    }
+  }, [value]); // array dependency
+
+
+  /** HANDLERS **/
+  const buttonHandler = () => {
+    setValue(!value);
+  };
 
   return (
     <div className="home-navbar">
@@ -53,12 +73,12 @@ export default function HomeNavbar() {
                 </Button>
               </Box>
             ) : (
-              <img
-                className="user-avatar"
-                src={"/icons/default-user.svg"}
-                aria-haspopup={"true"}
-              />
-            )}
+                <img
+                  className="user-avatar"
+                  src={"/icons/default-user.svg"}
+                  aria-haspopup={"true"}
+                />
+              )}
           </Stack>
         </Stack>
         <Stack className={"header-frame"}>
@@ -67,10 +87,10 @@ export default function HomeNavbar() {
               World's Most Delicious Cousine
             </Box>
             <Box className={"wel-txt"}>The Choice, not just a choice</Box>
-            <Box className={"service-txt"}>24 hours service</Box>
+            <Box className={"service-txt"}>{count} hours service</Box>
             <Box className={"signup"}>
               {!authMember ? (
-                <Button variant={"contained"} className={"signup-button"}>
+                <Button variant={"contained"} className={"signup-button"} onClick={buttonHandler}>
                   SIGN UP
                 </Button>
               ) : null}
