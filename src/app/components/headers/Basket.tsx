@@ -23,7 +23,7 @@ interface BasketProps {
 
 export default function Basket(props: BasketProps) {
   const { cartItems, onAdd, onRemove, onDelete, onDeleteAll } = props;
-  const {authMember} = useGlobals();
+  const { authMember, setOrderBuilder } = useGlobals();
   const history = useHistory();
   const itemsPrice = cartItems.reduce((a: number, c: CartItem) => a + c.quantity * c.price, 0);
   const shippingCost = itemsPrice < 100 ? 5 : 0;
@@ -43,19 +43,19 @@ export default function Basket(props: BasketProps) {
   const proceedOrderHandler = async () => {
     try {
       handleClose();
-      if(!authMember) throw new Error(Messages.error2);
+      if (!authMember) throw new Error(Messages.error2);
 
       const order = new OrderService();
       await order.createOrder(cartItems);
 
       onDeleteAll();
 
-      // REFRESH VIA CONTEXT
+      setOrderBuilder(new Date());
       history.push("/orders");
 
     } catch (err) {
-        console.log(err);
-        sweetErrorHandling(err).then();
+      console.log(err);
+      sweetErrorHandling(err).then();
     }
   }
 
